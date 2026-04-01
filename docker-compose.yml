@@ -9,6 +9,10 @@ services:
       MYSQL_DATABASE: dockerdb
     ports:
       - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
  
   spring-app:
     build: .
@@ -16,5 +20,7 @@ services:
     ports:
       - "8900:8080"
     depends_on:
-      - mysql-db
+      mysql-db:
+        condition: service_healthy
+    restart: always
  
